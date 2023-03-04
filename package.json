@@ -1,0 +1,33 @@
+{
+  "name": "react_native",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "expo start --dev-client",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo start --web"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "expo": "~46.0.9",
+    "expo-cli": "^6.0.6",
+    "expo-splash-screen": "~0.16.2",
+    "expo-status-bar": "~1.4.0",
+    "metro-core": "^0.73.1",
+    "react": "18.0.0",
+    "react-dom": "18.0.0",
+    "react-native": "0.69.6",
+    "react-native-nfc-manager": "^3.14.0",
+    "react-native-qrcode-svg": "^6.2.0",
+    "react-native-shadow-2": "^7.0.6",
+    "react-native-svg": "12.3.0",
+    "react-native-touchable-scale": "^2.2.0",
+    "react-native-web": "~0.18.7",
+    "react-navigation-stack": "^2.10.4",
+    "react-timer-mixin": "^0.13.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.9"
+  },
+  "private": true
+}
