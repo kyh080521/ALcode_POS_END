@@ -10,6 +10,16 @@ import com.facebook.react.ReactRootView;
 import expo.modules.ReactActivityDelegateWrapper;
 
 public class MainActivity extends ReactActivity {
+  public class MainActivity extends ReactActivity {
+	@Override
+	protected List<ReactPackage> getPackages() {
+		return Arrays.<ReactPackage>asList(
+			new MainReactPackage(),
+			new RNImmersiveModePackage()	// add this
+		);
+	}
+  }
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     // Set the theme to AppTheme BEFORE onCreate to support 

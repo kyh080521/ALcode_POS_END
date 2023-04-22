@@ -1,5 +1,8 @@
 rootProject.name = 'React_Native'
 
+include ':react-native-immersive-mode'
+project(':react-native-immersive-mode').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-immersive-mode/android')
+
 apply from: new File(["node", "--print", "require.resolve('expo/package.json')"].execute(null, rootDir).text.trim(), "../scripts/autolinking.gradle");
 useExpoModules()
 
