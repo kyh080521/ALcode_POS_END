@@ -47,6 +47,7 @@ const Body = () => {
     const [saveText, setSaveText] = useState(''); //가장 최근에 찍힌 상품 고유번호
     const [inputText, setInputText] = useState(''); //바코드를 찍으면 InputText에 들어온 후 
     const [modalVisible, setmodalVisible] = useState(false);
+    const [nationality, setNationality] = useState('USA');
 
     return (
         <View style = {styles.body}>
@@ -83,12 +84,7 @@ const Body = () => {
                                 <Text style = {{ color : 'black', fontSize : 20}}>GS20000</Text>
                            </View>
                         </View>
-                        <View style = {styles.itmeHeadState}>
-                           <View>
-                                <Text>{date}</Text>
-                                <Text>{time}</Text>
-                           </View>
-                        </View>
+        
                     </View>
                     <TextInput
                         style={styles.testInput}
@@ -100,17 +96,55 @@ const Body = () => {
                         }}
 
                         onSubmitEditing={async () => {
-                            const BAR_CODE = saveText;
-                            try {
-                                const res = await axios.get(
-                                    'https://world.openfoodfacts.org/product/'+BAR_CODE 
-                                );
-                                let nm = res.data.split("<title>")[1].split('</title>')[0].trim();
-                                let a= nm + '&' + res.data.split("Allergens:</strong>")[1].split('</div>')[0].trim() + '/';
-                                setData(data+a)
-                                setPrdnm([...prdnm,nm])
-                            } catch (error) {
-                                    console.log(error);
+                            if(nationality == 'USA') {
+                                const BAR_CODE = saveText;
+                                try {
+                                    const res = await axios.get(
+                                        'https://world.openfoodfacts.org/product/'+BAR_CODE 
+                                    );
+                                    let nm = res.data.split("<title>")[1].split('</title>')[0].trim();
+                                    let a= nm + '&' + res.data.split("Allergens:</strong>")[1].split('</div>')[0].trim() + '/';
+                                    setData(data+a)
+                                    setPrdnm([...prdnm,nm])
+                                } catch (error) {
+                                        console.log(error);
+                                }
+                            }
+                            else if( nationality == 'KOR') {
+                                const BAR_CODE = saveText;
+                                try {
+                                    const res = await axios.get(
+                                        'http://openapi.foodsafetykorea.go.kr/api/dc61c6e3c72645e19481/C005/xml/1/5/BAR_CD='+BAR_CODE
+                                    );
+                                    let resNumber = JSON.stringify(res);
+                                    
+                                    let prdlstReportNo=resNumber.split("<PRDLST_REPORT_NO>")[1].split("</PRDLST_REPORT_NO>")[0];
+                                    var a = '';
+                                    var nm = '';
+                                    var xhr = new XMLHttpRequest();
+                                    var url = 'http://apis.data.go.kr/B553748/CertImgListService/getCertImgListService'; 
+                                    var queryParams = '?' + encodeURIComponent('serviceKey') + '='+'4Es3IAYWvtEjQloH9aZivTA0FhZMzBQbDRsGvzwvSpWjQfBd%2BGkPTUj7TNeAltYbfnkZd%2BMPvvlwmdYPH%2FC%2BXw%3D%3D'; 
+                                    queryParams += '&' + encodeURIComponent('prdlstReportNo') + '=' + encodeURIComponent(prdlstReportNo); //
+                                    queryParams += '&' + encodeURIComponent('returnType') + '=' + encodeURIComponent('xml'); //
+                                    queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); //
+                                    queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('10'); /**/
+                                    xhr.open('GET', url + queryParams);
+                                    xhr.onreadystatechange = function () {
+                                        if (this.readyState == 4) {
+                                            a += (this.responseText).split("<prdlstNm>")[1].split("</prdlstNm>")[0].trim();
+                                            a += '&' + (this.responseText).split("<allergy>")[1].split("함유</allergy>")[0].trim();
+                                            a += '&' + prdlstReportNo;
+                                            a += '/';
+                                            nm=(this.responseText).split("<prdlstNm>")[1].split("</prdlstNm>")[0];
+                                            setData(data+a);
+                                            setPrdnm([...prdnm,nm]);
+                                        }
+                                    };
+                            
+                                    xhr.send('');
+                                } catch (error) {
+                                        console.log(error);
+                                }
                             }
                         }}
                         keyboardType='numeric'
@@ -132,12 +166,19 @@ const Body = () => {
                     <View style = {styles.itemFoot}>
                         <View style = {styles.productNumView}>
                             <View style = {{
-                                flexDirection : 'row',}}
-                            >
+                                flexDirection : 'row',
+                                flex : 1,
+                            }}>
                                 <Text>Num of Product : </Text>
                                 <Text>{prdnm.length}</Text>
                             </View>
-                            <View></View>
+                            <View style = {{
+                                flexDirection : 'row',
+                                flex : 1,
+                            }}>
+                                <Text>API : </Text>
+                                <Text>{nationality}</Text>
+                            </View>
                             <View></View>
                         </View>
                         <View style = {styles.grayBarView}></View>
@@ -537,20 +578,31 @@ const Body = () => {
                             </Text>
                         </View>
                         <View style = {{
-                            flex: 3,
+                            flex : 3,
                             justifyContent : 'center',
                             alignItems : 'center',
                             backgroundColor: "#018b01",
-                            marginTop : 3
+                            marginTop : 3,
                         }}>
-                            <Text style = {{
-                                color : 'white',
-                                fontSize : 10,
-                                justifyContent : 'center',
-                                alignItems : 'center'
-                            }}>
-                                Other Payment
-                            </Text>
+                            <TouchableOpacity
+                                onPressOut = {() => {
+                                    if(nationality == 'USA'){ 
+                                        setNationality('KOR');
+                                    }
+                                    else if(nationality == 'KOR') {
+                                        setNationality('USA');
+                                    }
+                                }}
+                                style = {{
+                                    color : 'white',
+                                    fontSize : 10,
+                                    justifyContent : 'center',
+                                    alignItems : 'center',
+                                }}>
+                                <Text style = {{color : 'white'}}>
+                                    Change API
+                                </Text>
+                            </TouchableOpacity>
                         </View>
                         <TouchableOpacity
                             onPressOut={()=>{
