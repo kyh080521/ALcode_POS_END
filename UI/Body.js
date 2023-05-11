@@ -6,6 +6,20 @@ import QRIcon from '../assets/QR-icon-removebg.png';
 
 const Body = () => {
     let now = new Date();
+    const nationalTr = ['USA', '한국'];
+    const national = ['USA', 'KOR'];
+    const paragraph = [
+        ['STATION', '매장'],
+        ['JS07', 'YH08'],
+        ['Num of Product', '상품 개수'],
+        ['Hold/Order', '대기수'],
+        ['Hold/Order List', '대기 명단'],
+        ['Qty', '수량'],
+        ['Disc(All)', '모두 삭제'],
+        ['Show Total', '합계'],
+        ['Change API', 'API 변경'],
+        ['CASH', '구매']
+    ];
     const month = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'nomember', 'december'];
     const week = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
     const timeWhat = ['AM', 'PM'];
@@ -47,10 +61,12 @@ const Body = () => {
     const [saveText, setSaveText] = useState(''); //가장 최근에 찍힌 상품 고유번호
     const [inputText, setInputText] = useState(''); //바코드를 찍으면 InputText에 들어온 후 
     const [modalVisible, setmodalVisible] = useState(false);
-    const [nationality, setNationality] = useState('USA');
+    const [nationality, setNationality] = useState(0);
 
     return (
+        
         <View style = {styles.body}>
+        
             <Modal
                 style={{top: '50%', left: '50%', transform: 'translate(-50%, -50%) !important'}}
                 animationType='fade'
@@ -61,12 +77,15 @@ const Body = () => {
                 <TouchableOpacity 
                     style={{flex:1 ,alignItems: 'center', justifyContent: 'center', backgroundColor:'#00000069'}} 
                     activeOpacity={1} 
-                    onPressOut={() => {setmodalVisible(false)}}
+                    onPressOut={() => {setmodalVisible(false)}
+                    }                   
                 >
                     <View  style={{padding:50 , backgroundColor:'#fff', borderRadius: 10}}>
                         <QRCode
                             size= {300}
-                            value = {data}
+                            value = {
+                                data
+                            }
                         />
                     </View>
                 </TouchableOpacity>
@@ -81,10 +100,21 @@ const Body = () => {
                            </View>
                            <View>
                                 <Text style = {styles.itmeHeadText2}>1234</Text>
-                                <Text style = {{ color : 'black', fontSize : 20}}>GS20000</Text>
+                                <Text style = {{ color : 'black', fontSize : 20}}>{paragraph[1][nationality]}</Text>
                            </View>
+                          
                         </View>
-        
+                        
+                            <Text style = {styles.itmeHeadText1}>API</Text>
+                            <Text style = {{  
+                                paddingBottom : 5,
+                                color : 'black',
+                                fontSize : 20,
+                                marginLeft: 30,
+                                fontStyle : 'bold'               
+                            }}>
+                                {national[nationality]}
+                            </Text>
                     </View>
                     <TextInput
                         style={styles.testInput}
@@ -96,7 +126,22 @@ const Body = () => {
                         }}
 
                         onSubmitEditing={async () => {
-                            if(nationality == 'USA') {
+                            if(national[nationality] == 'USA') {
+                                switch(saveText) {
+                                    case '5000328513409':
+                                        break
+                                    case '7622300336738':
+                                        setData(data+'Oreo-154g&Soybeans, Milk, Wheat/')
+                                        setPrdnm([...prdnm,'Oreo-154g'])
+                                        break
+                                    case '3017620422003':
+                                        setData(data+'Nutella -Ferrero -400g&Milk, Hazelnut, Soybeans/')
+                                        setPrdnm([...prdnm,'Nutella -Ferrero -400g'])
+                                        break
+                                    default:
+                                        console.log('??');
+                                }
+                                /*
                                 const BAR_CODE = saveText;
                                 try {
                                     const res = await axios.get(
@@ -108,9 +153,25 @@ const Body = () => {
                                     setPrdnm([...prdnm,nm])
                                 } catch (error) {
                                         console.log(error);
-                                }
+                                } */
                             }
-                            else if( nationality == 'KOR') {
+                            else if( national[nationality] == 'KOR') {
+                                switch(saveText) {
+                                    case '8801043035989':
+                                        setData(data+'새우깡&밀, 새우, 대두, 우유/')
+                                        setPrdnm([...prdnm,'새우깡'])
+                                        break
+                                    case '8801056018948':
+                                        setData(data+'칸타타프리미엄라떼&우유/')
+                                        setPrdnm([...prdnm,'칸타타프리미엄라떼'])
+
+                                        break
+                                    case '5000159461122':
+                                        break
+                                    default:
+                                        console.log('??');
+                                }
+                                /*
                                 const BAR_CODE = saveText;
                                 try {
                                     const res = await axios.get(
@@ -127,7 +188,7 @@ const Body = () => {
                                     queryParams += '&' + encodeURIComponent('prdlstReportNo') + '=' + encodeURIComponent(prdlstReportNo); //
                                     queryParams += '&' + encodeURIComponent('returnType') + '=' + encodeURIComponent('xml'); //
                                     queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); //
-                                    queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('10'); /**/
+                                    queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('10'); /*
                                     xhr.open('GET', url + queryParams);
                                     xhr.onreadystatechange = function () {
                                         if (this.readyState == 4) {
@@ -144,7 +205,7 @@ const Body = () => {
                                     xhr.send('');
                                 } catch (error) {
                                         console.log(error);
-                                }
+                                } */
                             }
                         }}
                         keyboardType='numeric'
@@ -169,7 +230,7 @@ const Body = () => {
                                 flexDirection : 'row',
                                 flex : 1,
                             }}>
-                                <Text>Num of Product : </Text>
+                            <Text>{paragraph[2][nationality]}</Text>
                                 <Text>{prdnm.length}</Text>
                             </View>
                             <View style = {{
@@ -177,7 +238,7 @@ const Body = () => {
                                 flex : 1,
                             }}>
                                 <Text>API : </Text>
-                                <Text>{nationality}</Text>
+                                <Text>{nationalTr[nationality]}</Text>
                             </View>
                             <View></View>
                         </View>
@@ -239,7 +300,7 @@ const Body = () => {
                                 color : 'white',
                                 fontSize : 10
                             }}>
-                                Hold/Order
+                               {paragraph[3][nationality]}
                             </Text>
                         </View>
                         <View style = {{
@@ -253,7 +314,7 @@ const Body = () => {
                                 color : 'white',
                                 fontSize : 10
                             }}>
-                                Hold/Order List
+                                {paragraph[4][nationality]}
                             </Text>
                         </View>
                         <View style = {{
@@ -267,7 +328,7 @@ const Body = () => {
                                 color : 'white',
                                 fontSize : 17
                             }}>
-                                Qty
+                                {paragraph[5][nationality]}
                             </Text>
                         </View>
                         <View style = {{
@@ -281,7 +342,7 @@ const Body = () => {
                                 color : 'white',
                                 fontSize : 13
                             }}>
-                                Disc(All)
+                                {paragraph[6][nationality]}
                             </Text>
                         </View>
                         <View style = {{
@@ -574,39 +635,34 @@ const Body = () => {
                                 color : 'white',
                                 fontSize : 12,
                             }}>
-                                Show Total
+                               {paragraph[7][nationality]}
                             </Text>
                         </View>
-                        <View style = {{
-                            flex : 3,
-                            justifyContent : 'center',
-                            alignItems : 'center',
-                            backgroundColor: "#018b01",
-                            marginTop : 3,
-                        }}>
                             <TouchableOpacity
-                                onPressOut = {() => {
-                                    if(nationality == 'USA'){ 
-                                        setNationality('KOR');
-                                    }
-                                    else if(nationality == 'KOR') {
-                                        setNationality('USA');
-                                    }
-                                }}
-                                style = {{
-                                    color : 'white',
-                                    fontSize : 10,
-                                    justifyContent : 'center',
-                                    alignItems : 'center',
-                                }}>
-                                <Text style = {{color : 'white'}}>
-                                    Change API
-                                </Text>
+                                    onPressOut = {() => {
+                                        if(nationality == '0'){ 
+                                            setNationality('1');
+                                        }
+                                        else if(nationality == '1') {
+                                            setNationality('0');
+                                        }
+                                    }}
+                                    style = {{
+                                        flex : 3,
+                                        justifyContent : 'center',
+                                        alignItems : 'center',
+                                        backgroundColor: "#018b01",
+                                        marginTop : 3,
+                                    }}>
+                                <View>
+                                    <Text style = {{color : 'white'}}>
+                                        {paragraph[8][nationality]}
+                                    </Text>
+                                </View>
                             </TouchableOpacity>
-                        </View>
                         <TouchableOpacity
                             onPressOut={()=>{
-                                setPrdnm([]);
+                                setPrdnm(['']);
                                 setData('');
                                 setInputText('');
                                 setSaveText('');
@@ -621,7 +677,7 @@ const Body = () => {
                             }}>
                             <View style = {{
                             }}>
-                                    <Text style = {styles.iButtonText}>CASH</Text>
+                                    <Text style = {styles.iButtonText}>{paragraph[9][nationality]}</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -656,7 +712,7 @@ const styles = StyleSheet.create ({
     },
     itmeHeadState: {
         flexDirection : 'row',
-        paddingRight: 50,
+        paddingRight: 100,
     },
     mallInformView: {
         paddingRight: 10
@@ -669,7 +725,7 @@ const styles = StyleSheet.create ({
     itmeHeadText2: {
         paddingBottom : 5,
         color : 'black',
-        fontSize : 20,
+        fontSize : 20, 
     },
     item2: {
         flex: 5,
@@ -765,6 +821,37 @@ const styles = StyleSheet.create ({
         fontSize: 40,
         color: 'black',
         marginBottom : 8,
+    },
+    banner: {
+        flex : 1,
+        backgroundColor : '#9CCAFC'
+    },
+    bannerButtonViewFr: {
+        backgroundColor : '#065bb8',
+        alignContent: "center",
+        justifyContent: "center",
+        flex : 1,
+    },
+    bannerButtonView: {
+        backgroundColor : '#9CCAFC',
+        alignContent: "center",
+        justifyContent: "center",
+        flex: 1,
+        
+    },
+    bannerButtonViewEnd: {
+        backgroundColor : '#9CCAFC',
+        alignContent: "center",
+        justifyContent: "center",
+        flex : 3,
+    },
+    bannerButton: {
+        marginRight : 10,
+        textAlign : 'center',
+        flex : 1,
+        color : 'white',
+        alignItems : 'center',
+        justifyContent : 'center',
     },
 
 })
