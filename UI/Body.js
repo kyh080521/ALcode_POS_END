@@ -135,7 +135,7 @@ const Body = () => {
                                         setPrdnm([...prdnm,'Oreo-154g'])
                                         break
                                     case '3017620422003':
-                                        setData(data+'Nutella -Ferrero -400g&Milk, Hazelnut, Soybeans/')
+                                        setData(data+'Nutella-Ferrero-400g&Milk, Hazelnut, Soybeans/')
                                         setPrdnm([...prdnm,'Nutella -Ferrero -400g'])
                                         break
                                     default:
